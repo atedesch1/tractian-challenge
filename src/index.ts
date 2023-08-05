@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
+import companyRoutes from './routes/company_routes';
+
 if (process.env.NODE_ENV != "production") {
     dotenv.config();
     console.log("Environment variables loaded");
@@ -17,6 +19,8 @@ mongoose.connect(MONGODB_URI)
     .catch((err) => console.error('MongoDB connection error:', err));
 
 app.use(bodyParser.json());
+
+app.use('/companies', companyRoutes);
 
 app.get('/', (req, res) => {
     res.send('It works!');
