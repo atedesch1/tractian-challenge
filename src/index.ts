@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
-import companyRoutes from './routes/company_routes';
 
 if (process.env.NODE_ENV != "production") {
     dotenv.config();
@@ -18,13 +17,18 @@ mongoose.connect(MONGODB_URI)
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error('MongoDB connection error:', err));
 
+mongoose.plugin((schema) => {
+    schema.set('toJSON', {
+        virtuals: true,
+        versionKey: false,
+        transform: function(_doc, ret) { delete ret._id }
+    })
+});
+
 app.use(bodyParser.json());
 
-app.use('/companies', companyRoutes);
-
-app.get('/', (req, res) => {
-    res.send('It works!');
-});
+import router from './router';
+app.use(router);
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
