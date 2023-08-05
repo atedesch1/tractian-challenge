@@ -12,7 +12,9 @@ const app: Application = express();
 const PORT = process.env.PORT || "3000";
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://root:pass@mongo:27017";
 
-mongoose.connect(MONGODB_URI);
+mongoose.connect(MONGODB_URI)
+    .then(() => console.log('MongoDB connected'))
+    .catch((err) => console.error('MongoDB connection error:', err));
 
 app.use(bodyParser.json());
 
