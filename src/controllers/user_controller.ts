@@ -1,20 +1,69 @@
 import { Request, Response } from 'express';
 import User, { IUser } from '../models/user';
-import Company from '../models/company';
+import Company, { ICompany } from '../models/company';
 
-export async function createUser(req: Request, res: Response) {
+export async function registerUser(req: Request, res: Response) {
     try {
-        const { name, companyId } = req.body;
+        const { userName, companyName } = req.body;
 
-        if (companyId && !(await Company.findById(companyId))) {
-            return res.status(404).json({ error: 'Company not found.' });
+        if (!userName) {
+            return res.status(400).json({ error: 'User name is required.' });
         }
-        
-        const user: IUser = new User({ name, company: companyId });
+        if (!companyName) {
+            return res.status(400).json({ error: 'Company name is required.' });
+        }
+
+        const company: ICompany = new Company({ name: companyName });
+
+        await company.save();
+
+        const user: IUser = new User({
+            name: userName,
+            company: {
+                id: company.id,
+                isManager: true,
+            },
+        });
+
         await user.save();
         res.status(201).json(user);
     } catch (err) {
-        res.status(500).json({ error: 'Could not create the user.' });
+        res.status(500).json({ error: 'Could not register user.' });
+    }
+}
+
+export async function inviteUser(req: Request, res: Response) {
+    try {
+        const { userId, name } = req.body;
+
+        if (!userId) {
+            return res.status(400).json({ error: 'Manager ID is required.' });
+        }
+        if (!name) {
+            return res.status(400).json({ error: 'Invitee name is required.' });
+        }
+
+        const manager = await User.findById(userId);
+        if (!manager) {
+            return res.status(404).json({ error: 'Manager not found.' });
+        }
+
+        if (!manager.company?.isManager) {
+            return res.status(400).json({ error: 'Inviter has to be a manager.' });
+        }
+
+        const invitee: IUser = new User({
+            name: name,
+            company: {
+                id: manager.company.id,
+                isManager: false,
+            },
+        });
+
+        await invitee.save();
+        res.status(201).json(invitee);
+    } catch (err) {
+        res.status(500).json({ error: 'Could not invite user.' });
     }
 }
 
@@ -24,38 +73,5 @@ export async function getUsers(_req: Request, res: Response) {
         res.json(users);
     } catch (err) {
         res.status(500).json({ error: 'Could not retrieve users.' });
-    }
-}
-
-export async function updateUser(req: Request, res: Response) {
-    try {
-        const { id } = req.params;
-        const { name, companyId } = req.body;
-
-        if (companyId && !(await Company.findById(companyId))) {
-            return res.status(404).json({ error: 'Company not found.' });
-        }
-
-        const updatedUser = await User.findByIdAndUpdate(id, { name, company: companyId }, { new: true });
-        if (!updatedUser) {
-            return res.status(404).json({ error: 'User not found.' });
-        }
-
-        res.json(updatedUser);
-    } catch (err) {
-        res.status(500).json({ error: 'Could not update the company.' });
-    }
-}
-
-export async function deleteUser(req: Request, res: Response) {
-    try {
-        const { id } = req.params;
-        const deletedUser = await User.findByIdAndDelete(id);
-        if (!deletedUser) {
-            return res.status(404).json({ error: 'User not found.' });
-        }
-        res.json(deletedUser);
-    } catch (err) {
-        res.status(500).json({ error: 'Could not delete the company.' });
     }
 }
