@@ -34,28 +34,16 @@ export async function registerUser(req: Request, res: Response) {
 
 export async function inviteUser(req: Request, res: Response) {
     try {
-        const { userId, name } = req.body;
+        const { user, name } = req.body;
 
-        if (!userId) {
-            return res.status(400).json({ error: 'Manager ID is required.' });
-        }
         if (!name) {
             return res.status(400).json({ error: 'Invitee name is required.' });
-        }
-
-        const manager = await User.findById(userId);
-        if (!manager) {
-            return res.status(404).json({ error: 'Manager not found.' });
-        }
-
-        if (!manager.company?.isManager) {
-            return res.status(400).json({ error: 'Inviter has to be a manager.' });
         }
 
         const invitee: IUser = new User({
             name: name,
             company: {
-                id: manager.company.id,
+                id: user.company.id,
                 isManager: false,
             },
         });
