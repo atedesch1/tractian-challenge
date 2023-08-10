@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 
-
 if (process.env.NODE_ENV != 'production') {
     dotenv.config();
     console.log('Environment variables loaded');
@@ -12,8 +11,11 @@ if (process.env.NODE_ENV != 'production') {
 const app: Application = express();
 const PORT = process.env.PORT || '3000';
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://root:pass@mongo:27017';
+const mongoDBOptions: mongoose.ConnectOptions = process.env.NODE_ENV === 'production' ? {
+    tlsCertificateKeyFile: process.env.MONGODB_CERT_PATH
+} : {};
 
-mongoose.connect(MONGODB_URI)
+mongoose.connect(MONGODB_URI, mongoDBOptions)
     .then(() => console.log('MongoDB connected'))
     .catch((err) => console.error('MongoDB connection error:', err));
 
