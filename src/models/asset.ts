@@ -13,7 +13,7 @@ export interface IAsset extends Document {
     owner: string;
     status: AssetStatus;
     healthLevel: number;
-    image: string;
+    imageName: string;
     unitId: mongoose.Types.ObjectId;
 }
 
@@ -24,7 +24,7 @@ const AssetSchema: Schema = new Schema({
     owner: { type: String, required: true },
     status: { type: String, enum: AssetStatus, required: true },
     healthLevel: { type: Number, min: 0, max: 100, required: true },
-    image: { type: String, required: true },
+    imageName: { type: String, required: true },
     unitId: { type: Schema.Types.ObjectId, ref: 'Unit', required: true },
 });
 

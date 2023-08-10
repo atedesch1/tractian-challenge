@@ -1,14 +1,17 @@
 import multer from 'multer'
+import path from 'path';
 
-const storage = multer.diskStorage({ destination: 'images/' })
+export const imageDestination = path.resolve('/images')
+
+const storage = multer.diskStorage({ destination: imageDestination })
 
 const imageFilter = (
   req: Express.Request,
   file: Express.Multer.File,
   cb: multer.FileFilterCallback
 ) => {
-  if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
-    return cb(new Error('Only image files are allowed'))
+  if (!file.originalname.match(/\.(jpg)$/)) {
+    return cb(new Error('Only image files of type jpg are allowed'))
   }
   cb(null, true)
 }
