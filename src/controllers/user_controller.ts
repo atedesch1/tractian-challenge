@@ -58,7 +58,7 @@ export async function inviteUser(req: Request, res: Response) {
 export async function getUsers(_req: Request, res: Response) {
     try {
         const users = await User.find();
-        res.json(users);
+        res.status(200).json(users);
     } catch (err) {
         res.status(500).json({ error: 'Could not retrieve users.' });
     }

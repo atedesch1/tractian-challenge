@@ -5,7 +5,7 @@ import User from '../models/user';
 export async function getCompanies(_req: Request, res: Response) {
     try {
         const companies = await Company.find();
-        res.json(companies);
+        res.status(200).json(companies);
     } catch (err) {
         res.status(500).json({ error: 'Could not retrieve companies.' });
     }
@@ -24,7 +24,7 @@ export async function updateCompany(req: Request, res: Response) {
             return res.status(404).json({ error: 'Company not found.' });
         }
 
-        res.json(updatedCompany);
+        res.status(200).json(updatedCompany);
     } catch (err) {
         res.status(500).json({ error: 'Could not update the company.' });
     }

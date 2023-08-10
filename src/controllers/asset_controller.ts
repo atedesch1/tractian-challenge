@@ -60,7 +60,7 @@ export async function createAsset(req: Request, res: Response) {
 export async function getAssets(_req: Request, res: Response) {
     try {
         const assets = await Asset.find();
-        res.json(assets);
+        res.status(200).json(assets);
     } catch (err) {
         res.status(500).json({ error: 'Could not retrieve assets.' });
     }

@@ -20,7 +20,7 @@ export async function registerUnit(req: Request, res: Response) {
 export async function getUnits(_req: Request, res: Response) {
     try {
         const units = await Unit.find();
-        res.json(units);
+        res.status(200).json(units);
     } catch (err) {
         res.status(500).json({ error: 'Could not retrieve units.' });
     }
