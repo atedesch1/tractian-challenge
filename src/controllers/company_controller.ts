@@ -48,7 +48,7 @@ export async function updateCompanyMember(req: Request, res: Response) {
         }
 
         if (!member.company.id.equals(user.company.id)) {
-            return res.status(400).json({ error: 'User has to belong to manager\'s company.' });
+            return res.status(403).json({ error: 'User has to belong to manager\'s company.' });
         }
 
         let company = member.company;
