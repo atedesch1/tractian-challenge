@@ -1,11 +1,11 @@
 import express from 'express';
 import { getCompanies, updateCompany, updateCompanyMember } from '../controllers/company_controller';
-import { authenticate } from '../middlewares/auth';
+import { authenticate, authenticateManager } from '../middlewares/auth';
 
 const router = express.Router();
 
 router.get('/', getCompanies);
-router.put('/', authenticate, updateCompany);
-router.put('/members/:id', authenticate, updateCompanyMember);
+router.put('/', authenticateManager, updateCompany);
+router.put('/members/:id', authenticateManager, updateCompanyMember);
 
 export default router;
