@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import Asset, { IAsset, AssetStatus } from '../models/asset';
-import Unit, { IUnit } from '../models/unit';
+import Unit from '../models/unit';
 
 
 export async function createAsset(req: Request, res: Response) {
